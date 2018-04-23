@@ -1,0 +1,10 @@
+<application>
+  <component name="FileTypeManager" version="16">
+    <ignoreFiles list="*.hprof;*.pyc;*.pyo;*.rbc;*~;.DS_Store;.git;.hg;.svn;CVS;RCS;SCCS;__pycache__;_svn;rcs;" />
+    <extensionMap>
+      <mapping pattern="SunshineService" type="CLASS" />
+      <mapping pattern="temNovidadesContract" type="JAVA" />
+      <mapping ext="csv" type="PLAIN_TEXT" />
+    </extensionMap>
+  </component>
+</application>

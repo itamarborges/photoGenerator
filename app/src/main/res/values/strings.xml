@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PhotoGenerator</string>
+    <string name="cameraFailed">A captura de imagem falhou. Por favor, tente novamente.</string>
+    <string name="cameraNoPermission">Não foi possível tirar a foto pois a permissão da câmera foi revogada.</string>
+    <string name="camera">Câmera</string>
+    <string name="gallery">Galeria</string>
+    <string name="galleryNoPermission">Permissão para acessar a galeria foi negado.</string>
+</resources>
