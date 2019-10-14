@@ -59,7 +59,7 @@ public class ImageUtils {
     private static String getExternalFileName(File mediaStorageDir){
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        return mediaStorageDir.getPath() + File.separator + "IMG_"+ timeStamp + ".jpg";
+        return mediaStorageDir.getPath() + File.separator + timeStamp + "_IMG.png";
     }
 
     /** Create a file Uri for saving an image or video */
@@ -78,7 +78,7 @@ public class ImageUtils {
 
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile= new File(mediaStorageDir.getPath() + File.separator + "IMG_"+ timeStamp + ".jpg");
+        File mediaFile= new File(mediaStorageDir.getPath() + File.separator + timeStamp + "_IMG.png");
 
         Log.v(LogUtils.makeLogTag(ImageUtils.class), "uri do arquivo: " + mediaFile.getPath());
         if(mediaFile == null){
@@ -123,7 +123,7 @@ public class ImageUtils {
 
     private static File createFile(File mediaStorageDir, CharSequence complementFileName) {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile = new File(mediaStorageDir .getPath() + File.separator + "IMG_" + complementFileName + "-"+ timeStamp + ".jpg");
+        File mediaFile = new File(mediaStorageDir .getPath() + File.separator + timeStamp + "_IMG_" + complementFileName + ".png");
         return mediaFile;
     }
 

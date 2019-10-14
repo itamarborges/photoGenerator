@@ -9,6 +9,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -65,15 +66,18 @@ public class PhotoFragment extends Fragment implements View.OnClickListener, Act
 
         mContext = this.getContext();
 
-        Button cameraButton = (Button)rootView.findViewById(R.id.cameraButton);
+        Button cameraButton = rootView.findViewById(R.id.cameraButton);
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
         mIntentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraButton.setOnClickListener(this);
 
-        Button galleryButton = (Button)rootView.findViewById(R.id.galleryButton);
+        Button galleryButton = rootView.findViewById(R.id.galleryButton);
         galleryButton.setOnClickListener(this);
 
-        mPhotoImageView = (ImageView) rootView.findViewById(R.id.photoImageView);
+        mPhotoImageView = rootView.findViewById(R.id.photoImageView);
 
         return rootView;
     }

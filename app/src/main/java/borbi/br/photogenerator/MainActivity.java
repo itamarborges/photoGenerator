@@ -22,8 +22,10 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import borbi.br.photogenerator.enums.Order;
 import borbi.br.photogenerator.enums.RGB;
@@ -74,13 +76,13 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
 
         mContext = this;
 
-        mBtnChangeOrder = (Button) findViewById(R.id.btnChangeOrder);
-        mBtnSaveImage = (Button) findViewById(R.id.btnSaveImage);
-        mImageView = (ImageView) findViewById(R.id.photoImageView);
+        mBtnChangeOrder =  findViewById(R.id.btnChangeOrder);
+        mBtnSaveImage = findViewById(R.id.btnSaveImage);
         mPhotoFragment = (PhotoFragment) getSupportFragmentManager().findFragmentById(R.id.photoFragment);
-        mStatusTextView = (TextView) mPhotoFragment.getView().findViewById(R.id.statusTextView);
-        mBtnCamera = (Button) mPhotoFragment.getView().findViewById(R.id.cameraButton);
-        mBtnGallery = (Button) mPhotoFragment.getView().findViewById(R.id.galleryButton);
+        mImageView = mPhotoFragment.getView().findViewById(R.id.photoImageView);
+        mStatusTextView = mPhotoFragment.getView().findViewById(R.id.statusTextView);
+        mBtnCamera = mPhotoFragment.getView().findViewById(R.id.cameraButton);
+        mBtnGallery = mPhotoFragment.getView().findViewById(R.id.galleryButton);
 
         initializeArrayImages();
 

@@ -64,6 +64,8 @@ public class ReorderTask extends AsyncTask<Object,Void,ProcessedImage> {
                 }
             }
         });
+
+        Log.v(LogUtils.makeLogTag(ReorderTask.class),"Terminou o sort "+ new Date().toString());
         Bitmap novo = Bitmap.createBitmap(originBitmap.getWidth(),originBitmap.getHeight(), Bitmap.Config.ARGB_8888);
 
         int[] pixels = new int[a.length];
