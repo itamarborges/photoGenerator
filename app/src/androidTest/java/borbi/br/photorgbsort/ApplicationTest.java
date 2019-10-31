@@ -1,4 +1,4 @@
-package borbi.br.photogenerator;
+package borbi.br.photorgbsort;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

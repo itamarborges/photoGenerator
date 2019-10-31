@@ -1,4 +1,4 @@
-package borbi.br.photogenerator.utils;
+package borbi.br.photorgbsort.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package borbi.br.photogenerator.utils;
+package borbi.br.photorgbsort.utils;
 
 import android.util.Log;
 

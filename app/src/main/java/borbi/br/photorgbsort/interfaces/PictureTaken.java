@@ -1,4 +1,4 @@
-package borbi.br.photogenerator.interfaces;
+package borbi.br.photorgbsort.interfaces;
 
 /**
  * Created by Itamar on 04/06/2016.

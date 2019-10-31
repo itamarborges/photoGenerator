@@ -1,4 +1,4 @@
-package borbi.br.photogenerator.tasks;
+package borbi.br.photorgbsort.tasks;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,11 +11,11 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 
-import borbi.br.photogenerator.MainActivity;
-import borbi.br.photogenerator.enums.Order;
-import borbi.br.photogenerator.enums.RGB;
-import borbi.br.photogenerator.pojo.ProcessedImage;
-import borbi.br.photogenerator.utils.LogUtils;
+import borbi.br.photorgbsort.MainActivity;
+import borbi.br.photorgbsort.enums.Order;
+import borbi.br.photorgbsort.enums.RGB;
+import borbi.br.photorgbsort.pojo.ProcessedImage;
+import borbi.br.photorgbsort.utils.LogUtils;
 
 /**
  * Created by Gabriela on 05/06/2016.

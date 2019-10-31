@@ -1,4 +1,4 @@
-package borbi.br.photogenerator.utils;
+package borbi.br.photorgbsort.utils;
 
 import android.os.Debug;
 import android.support.annotation.IntDef;

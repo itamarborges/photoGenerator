@@ -1,4 +1,4 @@
-package borbi.br.photogenerator;
+package borbi.br.photorgbsort;
 
 import android.Manifest;
 import android.content.Context;
@@ -24,19 +24,17 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.AbstractList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.IntStream;
 
-import borbi.br.photogenerator.enums.Order;
-import borbi.br.photogenerator.enums.RGB;
-import borbi.br.photogenerator.fragments.PhotoFragment;
-import borbi.br.photogenerator.interfaces.PictureTaken;
-import borbi.br.photogenerator.pojo.ProcessedImage;
-import borbi.br.photogenerator.tasks.ReorderTask;
-import borbi.br.photogenerator.utils.ImageUtils;
-import borbi.br.photogenerator.utils.Utils;
+import borbi.br.photorgbsort.enums.Order;
+import borbi.br.photorgbsort.enums.RGB;
+import borbi.br.photorgbsort.fragments.PhotoFragment;
+import borbi.br.photorgbsort.interfaces.PictureTaken;
+import borbi.br.photorgbsort.pojo.ProcessedImage;
+import borbi.br.photorgbsort.tasks.ReorderTask;
+import borbi.br.photorgbsort.utils.ImageUtils;
+import borbi.br.photorgbsort.utils.Utils;
 
 interface TaskStatus {
 

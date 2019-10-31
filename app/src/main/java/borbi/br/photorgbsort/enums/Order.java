@@ -1,4 +1,4 @@
-package borbi.br.photogenerator.enums;
+package borbi.br.photorgbsort.enums;
 
 import java.io.Serializable;
 

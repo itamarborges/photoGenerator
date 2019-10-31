@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="borbi.br.photogenerator.fragments.PhotoFragment">
+    tools:context="borbi.br.photorgbsort.fragments.PhotoFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

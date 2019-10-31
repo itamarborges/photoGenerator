@@ -1,4 +1,4 @@
-package borbi.br.photogenerator;
+package borbi.br.photorgbsort;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package borbi.br.photogenerator.fragments;
+package borbi.br.photorgbsort.fragments;
 
 
 import android.Manifest;
@@ -28,12 +28,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import borbi.br.photogenerator.MainActivity;
-import borbi.br.photogenerator.R;
-import borbi.br.photogenerator.interfaces.PictureTaken;
-import borbi.br.photogenerator.utils.ImageUtils;
-import borbi.br.photogenerator.utils.LogUtils;
-import borbi.br.photogenerator.utils.Utils;
+import borbi.br.photorgbsort.MainActivity;
+import borbi.br.photorgbsort.R;
+import borbi.br.photorgbsort.interfaces.PictureTaken;
+import borbi.br.photorgbsort.utils.ImageUtils;
+import borbi.br.photorgbsort.utils.LogUtils;
+import borbi.br.photorgbsort.utils.Utils;
 
 public class PhotoFragment extends Fragment implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback{
 

@@ -1,8 +1,8 @@
-package borbi.br.photogenerator.pojo;
+package borbi.br.photorgbsort.pojo;
 
 import android.graphics.Bitmap;
 
-import borbi.br.photogenerator.enums.Order;
+import borbi.br.photorgbsort.enums.Order;
 
 /**
  * Created by Gabriela on 05/06/2016.

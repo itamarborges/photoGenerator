@@ -1,4 +1,4 @@
-package borbi.br.photogenerator.enums;
+package borbi.br.photorgbsort.enums;
 
 /**
  * Created by Gabriela on 05/06/2016.

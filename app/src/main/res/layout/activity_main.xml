@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:id="@+id/mainLayout"
-    tools:context="borbi.br.photogenerator.MainActivity">
+    tools:context="borbi.br.photorgbsort.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,7 +41,7 @@
 
     <fragment
         android:id="@+id/photoFragment"
-        android:name="borbi.br.photogenerator.fragments.PhotoFragment"
+        android:name="borbi.br.photorgbsort.fragments.PhotoFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout="@layout/fragment_photo"
