@@ -21,6 +21,8 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ import borbi.br.photogenerator.interfaces.PictureTaken;
 import borbi.br.photogenerator.pojo.ProcessedImage;
 import borbi.br.photogenerator.tasks.ReorderTask;
 import borbi.br.photogenerator.utils.ImageUtils;
+import borbi.br.photogenerator.utils.Utils;
 
 interface TaskStatus {
 
@@ -45,6 +48,7 @@ interface TaskStatus {
 public class MainActivity extends FragmentActivity implements PictureTaken, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final int PERMISSION_WRITE_EXTERNAL_STORAGE = 1;
+    private final int IMAGE_MAX_SIZE = 1024;
 
     Button mBtnChangeOrder;
     Button mBtnSaveImage;
@@ -63,6 +67,7 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
     Context mContext;
     int[] mPixels;
     int countImageProcessing = 1;
+    long pictureBytes;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -210,10 +215,48 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
     public void reordenarBits() {
         if (mBitmapColors == null) {
 
-            mStatusTextView.setText("Processando Imagens... 1/6");
+            mStatusTextView.setText("Processando Imagens... 1/7");
             habilitarBotoesTela(false);
 
-            mBitmapReordenar = BitmapFactory.decodeFile(pathPicture, null);
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            FileInputStream fis = null;
+            try {
+
+                fis = new FileInputStream(pathPicture);
+            } catch (FileNotFoundException e) {
+
+                e.printStackTrace();
+
+            }
+
+            //If the image has dimensions bigger than 1024, we resample it
+            BitmapFactory.decodeStream(fis, null, o);
+            int scale = 1;
+
+            if (o.outHeight > IMAGE_MAX_SIZE|| o.outWidth > IMAGE_MAX_SIZE) {
+                scale = (int)Math.pow(2, (int) Math.ceil(Math.log(IMAGE_MAX_SIZE / (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
+                Toast.makeText(this, R.string.warning_image_too_big, Toast.LENGTH_SHORT).show();
+            }
+
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            o2.inJustDecodeBounds = true;
+
+            BitmapFactory.decodeFile(pathPicture, o2);
+
+            pictureBytes = o2.outHeight * o2.outWidth;
+
+            if (!Utils.memoryAvailable(pictureBytes)) {
+                Toast.makeText(this, R.string.warning_memory_size, Toast.LENGTH_SHORT).show();
+                finalizarOrdenaca();
+                return;
+            }
+
+            BitmapFactory.Options o3 = new BitmapFactory.Options();
+            o3.inSampleSize = scale;
+
+            mBitmapReordenar = BitmapFactory.decodeFile(pathPicture, o3);
             mArrayBitmaps.put(Order.Regular, mBitmapReordenar);
             mPixels = new int[mBitmapReordenar.getWidth() * mBitmapReordenar.getHeight()];
             mBitmapReordenar.getPixels(mPixels, 0, mBitmapReordenar.getWidth(), 0, 0, mBitmapReordenar.getWidth(), mBitmapReordenar.getHeight());
@@ -241,10 +284,11 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
 
     private void createRunTask(Order sortOrder) {
         mReorderTask = new ReorderTask(this, new TaskStatusListener());
-        Object[] params = new Object[3];
+        Object[] params = new Object[4];
         params[0] = mBitmapReordenar;
         params[1] = sortOrder;
         params[2] = mBitmapColors;
+        params[3] = pictureBytes;
 
         mReorderTask.execute(params);
 
@@ -260,23 +304,36 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
         super.onStop();
     }
 
+    private void finalizarOrdenaca() {
+        habilitarBotoesTela(true);
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(500);
+        mBtnSaveImage.setEnabled(true);
+        mStatusTextView.setText("Ordenação: " + getDescriptionOrder(mCurrentOrder));
+    }
+
     public class TaskStatusListener implements TaskStatus {
         public void OnTaskFinished(ProcessedImage processedImage) {
 
+            boolean shouldStop = false;
+
             mArrayBitmaps.put(processedImage.getOrder(), processedImage.getBitmap());
+
+            if (!Utils.memoryAvailable(pictureBytes)) {
+                shouldStop = true;
+            }
+
             mCurrentOrder = nextSequence(mCurrentOrder);
-            if (mArrayBitmaps.get(mCurrentOrder) == null) {
+            if (mArrayBitmaps.get(mCurrentOrder) == null && !shouldStop) {
                 countImageProcessing++;
                 mStatusTextView.setText("Processando Imagens... " + String.valueOf(countImageProcessing) + "/7");
                 createRunTask(mCurrentOrder);
             } else {
-                habilitarBotoesTela(true);
-                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                vibrator.vibrate(500);
-                mBtnSaveImage.setEnabled(true);
-                mStatusTextView.setText("Ordenação: " + getDescriptionOrder(mCurrentOrder));
+                finalizarOrdenaca();
             }
         }
+
+
 
         @Override
         public void OnProgressUpdate() {

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -33,6 +34,9 @@ public class ReorderTask extends AsyncTask<Object,Void,ProcessedImage> {
     protected ProcessedImage doInBackground(Object[] params) {
 
         Log.v(ReorderTask.class.getName(),"Começou a ordenar: "+ new Date().toString());
+        try {
+
+
 
         Bitmap originBitmap = (Bitmap) params[0];
         final Order sortOrder = (Order)params[1];
@@ -77,6 +81,10 @@ public class ReorderTask extends AsyncTask<Object,Void,ProcessedImage> {
 
         return new ProcessedImage(novo,sortOrder);
 
+        } catch (Exception e) {
+            Toast.makeText(mContext, "Memória insuficiente para ordernar a imagem", Toast.LENGTH_LONG).show();
+            return null;
+        }
     }
 
     private int getDifference(RGB sortOrder, Integer color1, Integer color2){

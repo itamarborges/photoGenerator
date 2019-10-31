@@ -21,6 +21,11 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
 }
 
 dependencies {

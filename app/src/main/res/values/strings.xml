@@ -5,4 +5,6 @@
     <string name="camera">Câmera</string>
     <string name="gallery">Galeria</string>
     <string name="galleryNoPermission">Permissão para acessar a galeria foi negado.</string>
+    <string name="warning_memory_size">Seu dispositivo não está com memória disponível para realizar a ordenação. Tente utilizar imagens menores ou fechar outros aplicativos!</string>
+    <string name="warning_image_too_big">A imagem está sendo redimensionada por ser muito grande</string>
 </resources>

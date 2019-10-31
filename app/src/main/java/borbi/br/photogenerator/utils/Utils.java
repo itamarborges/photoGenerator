@@ -1,5 +1,6 @@
 package borbi.br.photogenerator.utils;
 
+import android.os.Debug;
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
 import android.view.View;
@@ -113,6 +114,13 @@ public class Utils {
 
     public static boolean isEmptyString(String s) {
         return ((s == null ) || (s.equals("")));
+    }
+
+    public static boolean memoryAvailable(long memoryExpectedToBeUSed) {
+
+        long nativeHeapFreeSize = Debug.getNativeHeapFreeSize();
+
+        return (nativeHeapFreeSize- memoryExpectedToBeUSed * 8) > 0;
     }
 
 }
