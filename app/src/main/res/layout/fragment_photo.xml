@@ -42,9 +42,11 @@
             android:text="Selecione uma imagem!"/>
 
     </LinearLayout>
+
     <ImageView
         android:id="@+id/photoImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:visibility="visible" />
 </LinearLayout>
