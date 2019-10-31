@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Photo RGBSort</string>
-    <string name="app_name_email">Photo RGBSort - by borbiapps@gmail.com</string>
+    <string name="app_name">Photo RGB Sort</string>
+    <string name="app_name_email">Photo RGB Sort - by borbiapps@gmail.com</string>
     <string name="cameraFailed">A captura de imagem falhou. Por favor, tente novamente.</string>
     <string name="cameraNoPermission">Não foi possível tirar a foto pois a permissão da câmera foi revogada.</string>
     <string name="camera">Câmera</string>
