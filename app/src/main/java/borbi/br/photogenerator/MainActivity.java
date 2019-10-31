@@ -51,13 +51,14 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
     private final int IMAGE_MAX_SIZE = 1024;
 
     Button mBtnChangeOrder;
+    Button mBtnShareImage;
     Button mBtnSaveImage;
     Button mBtnCamera;
     Button mBtnGallery;
     String pathPicture = null;
-    Order mCurrentOrder = null;
+    public Order mCurrentOrder = null;
     Integer[] mBitmapColors = null;
-    HashMap<Order, Bitmap> mArrayBitmaps = new HashMap<Order, Bitmap>();
+    public HashMap<Order, Bitmap> mArrayBitmaps = new HashMap<Order, Bitmap>();
     ImageView mImageView;
     PhotoFragment mPhotoFragment;
     TextView mStatusTextView;
@@ -74,12 +75,19 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
      */
     private GoogleApiClient client;
 
+    private void enableButtons(boolean enableButtons) {
+        mBtnSaveImage.setEnabled(enableButtons);
+        mBtnShareImage.setEnabled(enableButtons);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mContext = this;
+
+        this.setTitle(R.string.app_name_email);
 
         mBtnChangeOrder =  findViewById(R.id.btnChangeOrder);
         mBtnSaveImage = findViewById(R.id.btnSaveImage);
@@ -88,17 +96,18 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
         mStatusTextView = mPhotoFragment.getView().findViewById(R.id.statusTextView);
         mBtnCamera = mPhotoFragment.getView().findViewById(R.id.cameraButton);
         mBtnGallery = mPhotoFragment.getView().findViewById(R.id.galleryButton);
+        mBtnShareImage = mPhotoFragment.getView().findViewById(R.id.shareBtn);
 
         initializeArrayImages();
 
-        mBtnSaveImage.setEnabled(false);
+        enableButtons(false);
 
         mBtnChangeOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (pathPicture != null) {
                     if (mArrayBitmaps.get(Order.Regular) == null) {
-                        mBtnSaveImage.setEnabled(false);
+                        enableButtons(false);
                         reordenarBits();
                     } else {
                         mCurrentOrder = nextSequence(mCurrentOrder);
@@ -118,9 +127,9 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
                 if (pathPicture != null) {
                     if (canAccessGallery()) {
                         habilitarBotoesTela(false);
-                        mBtnSaveImage.setEnabled(false);
+                        enableButtons(false);
                         saveImage();
-                        mBtnSaveImage.setEnabled(true);
+                        enableButtons(true);
                         habilitarBotoesTela(true);
                     }
                 } else {
@@ -194,7 +203,7 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
         mBitmapColors = null;
         mOrderToShow = null;
         mCurrentOrder = Order.Regular;
-        mBtnSaveImage.setEnabled(false);
+        enableButtons(false);
         mStatusTextView.setText("Ordenação: " + getDescriptionOrder(mCurrentOrder));
         if (mReorderTask != null) {
             mReorderTask.cancel(true);
@@ -308,7 +317,7 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
         habilitarBotoesTela(true);
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(500);
-        mBtnSaveImage.setEnabled(true);
+        enableButtons(true);
         mStatusTextView.setText("Ordenação: " + getDescriptionOrder(mCurrentOrder));
     }
 

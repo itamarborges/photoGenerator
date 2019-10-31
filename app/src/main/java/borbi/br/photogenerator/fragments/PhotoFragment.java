@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,8 +22,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import borbi.br.photogenerator.MainActivity;
 import borbi.br.photogenerator.R;
 import borbi.br.photogenerator.interfaces.PictureTaken;
 import borbi.br.photogenerator.utils.ImageUtils;
@@ -42,6 +48,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener, Act
     private Intent mIntentCamera;
     private Intent mPhotoPickerIntent;
     private ImageView mPhotoImageView;
+    private Button mShareImage;
+
+    private MainActivity mMainActivity;
 
     public PhotoFragment() {
         // Required empty public constructor
@@ -65,6 +74,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener, Act
         View rootView = inflater.inflate(R.layout.fragment_photo, container, false);
 
         mContext = this.getContext();
+        mMainActivity = (MainActivity) getActivity();
 
         Button cameraButton = rootView.findViewById(R.id.cameraButton);
 
@@ -78,10 +88,33 @@ public class PhotoFragment extends Fragment implements View.OnClickListener, Act
         galleryButton.setOnClickListener(this);
 
         mPhotoImageView = rootView.findViewById(R.id.photoImageView);
+        mShareImage = rootView.findViewById(R.id.shareBtn);
+
+        mShareImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bitmap bitmap = mMainActivity.mArrayBitmaps.get(mMainActivity.mCurrentOrder);
+                try {
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    File file = new File(mContext.getExternalCacheDir(),timeStamp +"image_photo_generator.png");
+                    FileOutputStream fOut = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                    fOut.flush();
+                    fOut.close();
+                    file.setReadable(true, false);
+                    final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                    intent.setType("image/png");
+                    startActivity(Intent.createChooser(intent, "Share image via"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         return rootView;
     }
-
 
     @Override
     public void onClick(View v) {
@@ -211,7 +244,6 @@ public class PhotoFragment extends Fragment implements View.OnClickListener, Act
     public void setImage(Uri uri) {
 
         if (!Utils.isEmptyString(uri.toString())) {
-            ;
             mPhotoImageView.setImageBitmap(BitmapFactory.decodeFile(uri.getPath(), null));
             mPhotoImageView.setVisibility(View.VISIBLE);
         } else {
