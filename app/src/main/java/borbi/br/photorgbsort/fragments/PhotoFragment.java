@@ -48,7 +48,6 @@ public class PhotoFragment extends Fragment implements View.OnClickListener, Act
     private Intent mIntentCamera;
     private Intent mPhotoPickerIntent;
     private ImageView mPhotoImageView;
-    private Button mShareImage;
 
     private MainActivity mMainActivity;
 
@@ -88,30 +87,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener, Act
         galleryButton.setOnClickListener(this);
 
         mPhotoImageView = rootView.findViewById(R.id.photoImageView);
-        mShareImage = rootView.findViewById(R.id.shareBtn);
 
-        mShareImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bitmap bitmap = mMainActivity.mArrayBitmaps.get(mMainActivity.mCurrentOrder);
-                try {
-                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                    File file = new File(mContext.getExternalCacheDir(),timeStamp +"image_photo_generator.png");
-                    FileOutputStream fOut = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-                    fOut.flush();
-                    fOut.close();
-                    file.setReadable(true, false);
-                    final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-                    intent.setType("image/png");
-                    startActivity(Intent.createChooser(intent, "Share image via"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
 
         return rootView;
     }
