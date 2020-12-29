@@ -1,13 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "borbi.br.photogenerator"
         minSdkVersion 23
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 3
         versionName "1.0"
     }
@@ -32,9 +31,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 
-    //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:animated-vector-drawable:28.0.0'
-    implementation 'com.android.support:support-media-compat:28.0.0'
-    implementation 'com.google.firebase:firebase-appindexing:11.2.2'
+    implementation 'com.google.android.gms:play-services:12.0.0'
 }
