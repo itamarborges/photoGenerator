@@ -21,9 +21,13 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.AbstractList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,8 +42,8 @@ import borbi.br.photorgbsort.utils.Utils;
 
 interface TaskStatus {
 
-    public void OnTaskFinished(ProcessedImage processedImage);
-    public void OnProgressUpdate();
+    void OnTaskFinished(ProcessedImage processedImage);
+    void OnProgressUpdate();
 
 }
 
@@ -53,6 +57,7 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
     Button mBtnSaveImage;
     Button mBtnCamera;
     Button mBtnGallery;
+    private Button mShareImage;
     String pathPicture = null;
     public Order mCurrentOrder = null;
     Integer[] mBitmapColors = null;
@@ -94,50 +99,61 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
         mStatusTextView = mPhotoFragment.getView().findViewById(R.id.statusTextView);
         mBtnCamera = mPhotoFragment.getView().findViewById(R.id.cameraButton);
         mBtnGallery = mPhotoFragment.getView().findViewById(R.id.galleryButton);
-        mBtnShareImage = mPhotoFragment.getView().findViewById(R.id.shareBtn);
+        mBtnShareImage = findViewById(R.id.btnShareImage);
 
         initializeArrayImages();
 
         enableButtons(false);
 
-        mBtnChangeOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pathPicture != null) {
-                    if (mArrayBitmaps.get(Order.Regular) == null) {
-                        enableButtons(false);
-                        reordenarBits();
-                    } else {
-                        mCurrentOrder = nextSequence(mCurrentOrder);
-                        showImage(mArrayBitmaps.get(mCurrentOrder));
-                        mStatusTextView.setText("Ordenação: " + getDescriptionOrder(mCurrentOrder));
-                    }
-
-                } else {
-                    Toast.makeText(getApplication(), "Selecione uma foto antes!", Toast.LENGTH_LONG).show();
-                }
+        mBtnChangeOrder.setOnClickListener(view -> {
+            if (pathPicture != null) {
+                    enableButtons(false);
+                    habilitarBotoesTela(false);
+                    reordenarBits();
+            } else {
+                Toast.makeText(getApplication(), "Selecione uma foto antes!", Toast.LENGTH_LONG).show();
             }
         });
 
-        mBtnSaveImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pathPicture != null) {
-                    if (canAccessGallery()) {
-                        habilitarBotoesTela(false);
-                        enableButtons(false);
-                        saveImage();
-                        enableButtons(true);
-                        habilitarBotoesTela(true);
-                    }
-                } else {
-                    Toast.makeText(getApplication(), "Selecione uma imagem para salvar!", Toast.LENGTH_LONG).show();
+        mBtnSaveImage.setOnClickListener(view -> {
+            if (pathPicture != null) {
+                if (canAccessGallery()) {
+                    habilitarBotoesTela(false);
+                    enableButtons(false);
+                    saveImage();
+                    enableButtons(true);
+                    habilitarBotoesTela(true);
                 }
+            } else {
+                Toast.makeText(getApplication(), "Selecione uma imagem para salvar!", Toast.LENGTH_LONG).show();
             }
         });
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        mBtnShareImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bitmap bitmap = mArrayBitmaps.get(mCurrentOrder);
+                try {
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    File file = new File(mContext.getExternalCacheDir(),timeStamp +"image_photo_generator.png");
+                    FileOutputStream fOut = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                    fOut.flush();
+                    fOut.close();
+                    file.setReadable(true, false);
+                    final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                    intent.setType("image/png");
+                    startActivity(Intent.createChooser(intent, "Share image via"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void initializeArrayImages() {
@@ -220,51 +236,65 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
     }
 
     public void reordenarBits() {
-        if (mBitmapColors == null) {
 
-            mStatusTextView.setText("Processando Imagens... 1/7");
+        mCurrentOrder = nextSequence(mCurrentOrder);
+
+        for(Order key:mArrayBitmaps.keySet()){
+            if (key != Order.Regular) {
+                mArrayBitmaps.put(key, null);
+            }
+        }
+
+            mStatusTextView.setText("Processando Imagem!");
             habilitarBotoesTela(false);
 
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            FileInputStream fis = null;
-            try {
 
-                fis = new FileInputStream(pathPicture);
-            } catch (FileNotFoundException e) {
+            if (mArrayBitmaps.get(Order.Regular) == null) {
+                BitmapFactory.Options o = new BitmapFactory.Options();
+                o.inJustDecodeBounds = true;
+                FileInputStream fis = null;
+                try {
 
-                e.printStackTrace();
+                    fis = new FileInputStream(pathPicture);
+                } catch (FileNotFoundException e) {
 
+                    e.printStackTrace();
+
+                }
+
+                //If the image has dimensions bigger than 1024, we resample it
+                BitmapFactory.decodeStream(fis, null, o);
+                int scale = 1;
+
+                if (o.outHeight > IMAGE_MAX_SIZE|| o.outWidth > IMAGE_MAX_SIZE) {
+                    scale = (int)Math.pow(2, (int) Math.ceil(Math.log(IMAGE_MAX_SIZE / (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
+                    Toast.makeText(this, R.string.warning_image_too_big, Toast.LENGTH_SHORT).show();
+                }
+
+//            BitmapFactory.Options o2 = new BitmapFactory.Options();
+//            o2.inSampleSize = scale;
+//            o2.inJustDecodeBounds = true;
+//
+//            BitmapFactory.decodeFile(pathPicture, o2);
+//
+//            pictureBytes = o2.outHeight * o2.outWidth;
+//
+//            if (!Utils.memoryAvailable(pictureBytes)) {
+//                Toast.makeText(this, R.string.warning_memory_size, Toast.LENGTH_SHORT).show();
+//                finalizarOrdenaca();
+//                return;
+//            }
+
+                BitmapFactory.Options o3 = new BitmapFactory.Options();
+                o3.inSampleSize = scale;
+
+                mBitmapReordenar = BitmapFactory.decodeFile(pathPicture, o3);
+                mArrayBitmaps.put(Order.Regular, mBitmapReordenar);
+
+            } else {
+                mBitmapReordenar = mArrayBitmaps.get(Order.Regular);
             }
 
-            //If the image has dimensions bigger than 1024, we resample it
-            BitmapFactory.decodeStream(fis, null, o);
-            int scale = 1;
-
-            if (o.outHeight > IMAGE_MAX_SIZE|| o.outWidth > IMAGE_MAX_SIZE) {
-                scale = (int)Math.pow(2, (int) Math.ceil(Math.log(IMAGE_MAX_SIZE / (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
-                Toast.makeText(this, R.string.warning_image_too_big, Toast.LENGTH_SHORT).show();
-            }
-
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
-            o2.inJustDecodeBounds = true;
-
-            BitmapFactory.decodeFile(pathPicture, o2);
-
-            pictureBytes = o2.outHeight * o2.outWidth;
-
-            if (!Utils.memoryAvailable(pictureBytes)) {
-                Toast.makeText(this, R.string.warning_memory_size, Toast.LENGTH_SHORT).show();
-                finalizarOrdenaca();
-                return;
-            }
-
-            BitmapFactory.Options o3 = new BitmapFactory.Options();
-            o3.inSampleSize = scale;
-
-            mBitmapReordenar = BitmapFactory.decodeFile(pathPicture, o3);
-            mArrayBitmaps.put(Order.Regular, mBitmapReordenar);
             mPixels = new int[mBitmapReordenar.getWidth() * mBitmapReordenar.getHeight()];
             mBitmapReordenar.getPixels(mPixels, 0, mBitmapReordenar.getWidth(), 0, 0, mBitmapReordenar.getWidth(), mBitmapReordenar.getHeight());
             mBitmapColors = new Integer[mPixels.length];
@@ -283,10 +313,8 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
 
             wrapper.toArray(mBitmapColors);
 
-            mCurrentOrder = nextSequence(mCurrentOrder);
             countImageProcessing = 1;
             createRunTask(mCurrentOrder);
-        }
     }
 
     private void createRunTask(Order sortOrder) {
@@ -316,31 +344,18 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(500);
         enableButtons(true);
-        mStatusTextView.setText("Ordenação: " + getDescriptionOrder(mCurrentOrder));
     }
 
     public class TaskStatusListener implements TaskStatus {
         public void OnTaskFinished(ProcessedImage processedImage) {
 
-            boolean shouldStop = false;
-
             mArrayBitmaps.put(processedImage.getOrder(), processedImage.getBitmap());
 
-            if (!Utils.memoryAvailable(pictureBytes)) {
-                shouldStop = true;
-            }
+            showImage(mArrayBitmaps.get(mCurrentOrder));
+            mStatusTextView.setText("Ordenação: " + getDescriptionOrder(mCurrentOrder));
 
-            mCurrentOrder = nextSequence(mCurrentOrder);
-            if (mArrayBitmaps.get(mCurrentOrder) == null && !shouldStop) {
-                countImageProcessing++;
-                mStatusTextView.setText("Processando Imagens... " + String.valueOf(countImageProcessing) + "/7");
-                createRunTask(mCurrentOrder);
-            } else {
-                finalizarOrdenaca();
-            }
+            finalizarOrdenaca();
         }
-
-
 
         @Override
         public void OnProgressUpdate() {
@@ -391,7 +406,7 @@ public class MainActivity extends FragmentActivity implements PictureTaken, Acti
 
         galleryAddPic(contentUri);
 
-        Toast.makeText(getApplication(), "Imagem salva", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplication(), "Imagem salva no dispostivo!", Toast.LENGTH_SHORT).show();
 
     }
 

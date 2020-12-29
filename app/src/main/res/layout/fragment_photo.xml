@@ -8,23 +8,43 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-    <Button
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/camera"
-        android:id="@+id/cameraButton"
-        android:layout_gravity="left|top"
-        />
+          android:orientation="vertical">
 
-    <Button
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/gallery"
-        android:id="@+id/galleryButton" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:id="@+id/txtSourceImage"
+            android:layout_margin="10dp"
+            android:text="@string/choose_image" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cameraButton"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtSourceImage"
+            android:layout_alignParentStart="true"
+            android:layout_weight="1"
+            android:text="@string/camera" />
+
+
+        <Button
+            android:id="@+id/galleryButton"
+            android:layout_width="100dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtSourceImage"
+            android:layout_alignParentEnd="true"
+            android:text="@string/gallery" />
+        </LinearLayout>
+
+
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,18 +57,12 @@
             android:id="@+id/statusTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:gravity="center"
             android:text="Selecione uma imagem!"/>
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/shareBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/compartilhar_imagem" />
 
     <ImageView
         android:id="@+id/photoImageView"
